@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A house price estimator demo, built with scikit-learn and trained on made-up data.">
+    <title>House Price Estimator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="page">
+        <header>
+            <h1>House Price Estimator</h1>
+            <p class="notice"><strong>Demo only.</strong> This model learned from made-up houses, so its prices aren't real valuations.</p>
+        </header>
+
+        <div class="layout">
+            <form id="form" class="panel" novalidate>
+                <div class="field">
+                    <label for="area">Area (sq ft)</label>
+                    <input id="area" type="number" min="1" step="10" value="1800" inputmode="numeric">
+                </div>
+                <div class="field">
+                    <label for="locality">Locality</label>
+                    <select id="locality"></select>
+                </div>
+                <div class="field-row">
+                    <div class="field">
+                        <label for="bedroom">Bedrooms</label>
+                        <input id="bedroom" type="number" min="0" step="1" value="3" inputmode="numeric">
+                    </div>
+                    <div class="field">
+                        <label for="bathroom">Bathrooms</label>
+                        <input id="bathroom" type="number" min="0" step="1" value="2" inputmode="numeric">
+                    </div>
+                    <div class="field">
+                        <label for="age">Age (years)</label>
+                        <input id="age" type="number" min="0" step="1" value="10" inputmode="numeric">
+                    </div>
+                </div>
+                <p class="hint">Leave bedrooms, bathrooms or age blank to use a typical value.</p>
+            </form>
+
+            <section class="panel result" aria-live="polite">
+                <p class="result-label">Estimated price</p>
+                <p id="price" class="price"></p>
+                <p id="range" class="range"></p>
+                <p id="warning" class="warning" hidden></p>
+            </section>
+        </div>
+
+        <footer>
+            <p id="accuracy"></p>
+            <p><a href="https://github.com/Kishore-1011/House_Price_Prediction">View the code on GitHub</a></p>
+        </footer>
+    </main>
+
+    <script src="model.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
