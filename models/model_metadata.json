@@ -1,0 +1,22 @@
+{
+  "model": "ridge_log_price",
+  "features": [
+    "area",
+    "bedroom",
+    "bathroom",
+    "age",
+    "locality"
+  ],
+  "sha256": "02d6d0051557d5054df19b56ed1ce267d999de8dd9faa505a1d8364b7c0bb38b",
+  "versions": {
+    "python": "3.15.2",
+    "scikit_learn": "1.9.1",
+    "numpy": "2.5.4"
+  },
+  "test_metrics": {
+    "mae": 712715.57,
+    "rmse": 1036724.56,
+    "r2": 0.966864,
+    "mape": 0.064255
+  }
+}

@@ -1,7 +1,7 @@
-area,bedroom,age
-1850,3,20
-2600,2,15
-3250,3,12
-3200,2,25
-3600,3,9
-4000,5,8
+area,bedroom,bathroom,age,locality
+1850,3,2,20,Riverview
+2600,2,2,15,Hillcrest
+3250,3,3,12,Tech Park
+3200,,3,25,Old Town
+3600,3,3,9,Lakeside
+4000,5,4,8,Greenfield
