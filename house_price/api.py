@@ -6,20 +6,22 @@ Then open http://127.0.0.1:8000, or http://127.0.0.1:8000/docs for the API refer
 
 import argparse
 from contextlib import asynccontextmanager
+from pathlib import Path
 from typing import Literal
 
 import pandas as pd
 import uvicorn
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse, Response
+from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, ConfigDict, Field
 
-from house_price.config import AREA, FEATURES, LOCALITY_RATES, OTHER_NUMERIC, ROOT
+from house_price.config import AREA, FEATURES, LOCALITY_RATES, OTHER_NUMERIC
 from house_price.predict import predict_prices
 from house_price.storage import load_metadata, load_model
 
+STATIC_DIR = Path(__file__).resolve().parent / "static"
 MAX_AREA = 100_000
 LABELS = {"area": "area", "bedroom": "bedrooms", "bathroom": "bathrooms", "age": "age"}
 FIELD_ERRORS = {
@@ -94,6 +96,15 @@ def health(request: Request):
     return {"status": "ok", "model": request.app.state.metadata["model"]}
 
 
+@app.get("/options")
+def options(request: Request):
+    """What the web form needs to know before it can ask for a price."""
+    return {
+        "localities": list(LOCALITY_RATES),
+        "typical_error_percent": round(request.app.state.metadata["test_metrics"]["mape"] * 100),
+    }
+
+
 @app.post("/predict", response_model=Prediction)
 def predict(house: House, request: Request):
     metadata = request.app.state.metadata
@@ -111,14 +122,8 @@ def predict(house: House, request: Request):
     )
 
 
-@app.get("/config.js", include_in_schema=False)
-def page_config():
-    """Tells the page to ask this server, instead of calculating in the browser."""
-    return Response('window.HOUSE_API = "/predict";\n', media_type="text/javascript")
-
-
 # Last, so the routes above take priority over the files.
-app.mount("/", StaticFiles(directory=ROOT / "docs", html=True), name="site")
+app.mount("/", StaticFiles(directory=STATIC_DIR, html=True), name="site")
 
 
 def main():

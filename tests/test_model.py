@@ -1,10 +1,7 @@
-import math
-
 import numpy as np
 import pandas as pd
 
-from house_price.config import FEATURES, OTHER_NUMERIC
-from house_price.export_web import model_to_dict
+from house_price.config import FEATURES
 from house_price.model import LOG_RIDGE
 
 
@@ -43,31 +40,8 @@ def test_bigger_houses_cost_more(result):
 
 
 def test_price_range_brackets_the_prediction(result):
-    price_range = result.price_ranges[result.best_name]
-    assert price_range["low"] < 1 < price_range["high"]
+    assert result.price_range["low"] < 1 < result.price_range["high"]
 
 
 def test_price_range_holds_up_on_unseen_houses(result):
-    assert 0.7 <= result.price_ranges[result.best_name]["coverage_on_test"] <= 0.92
-
-
-def _web_formula(model, row):
-    """The same arithmetic docs/app.js performs."""
-    value = model["intercept"]
-    area = model["area"]
-    value += area["coef"] * (math.log(row["area"]) - area["mean"]) / area["scale"]
-    for name in OTHER_NUMERIC:
-        part = model["numeric"][name]
-        raw = row[name] if row[name] == row[name] else part["median"]
-        value += part["coef"] * (raw - part["mean"]) / part["scale"]
-    value += model["localities"].get(row["locality"], 0.0)
-    return math.exp(value)
-
-
-def test_exported_numbers_reproduce_the_model(data, result):
-    fitted = result.models[LOG_RIDGE]
-    exported = model_to_dict(fitted, result.test_scores[LOG_RIDGE], data, result.price_ranges[LOG_RIDGE])
-    rows = result.X_test.head(50)
-    expected = fitted.predict(rows)
-    for (_, row), target in zip(rows.iterrows(), expected):
-        assert math.isclose(_web_formula(exported, row), target, rel_tol=1e-9)
+    assert 0.7 <= result.price_range["coverage_on_test"] <= 0.92

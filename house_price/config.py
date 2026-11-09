@@ -13,7 +13,6 @@ METADATA_PATH = ROOT / "models" / "model_metadata.json"
 
 METRICS_PATH = ROOT / "reports" / "metrics.json"
 FIGURES_DIR = ROOT / "reports" / "figures"
-WEB_MODEL_PATH = ROOT / "docs" / "model.js"
 
 AREA = "area"
 OTHER_NUMERIC = ["bedroom", "bathroom", "age"]

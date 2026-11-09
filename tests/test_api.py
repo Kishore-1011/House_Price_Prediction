@@ -3,7 +3,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from house_price.api import app
-from house_price.config import FEATURES
+from house_price.config import FEATURES, LOCALITY_RATES
 from house_price.storage import load_metadata, load_model
 
 HOUSE = {"area": 1800, "bedroom": 3, "bathroom": 2, "age": 10, "locality": "Riverview"}
@@ -96,8 +96,20 @@ def test_serves_the_page(client):
     assert "House Price Estimator" in response.text
 
 
-def test_page_is_told_to_use_the_server(client):
-    assert '"/predict"' in client.get("/config.js").text
+def test_options_give_the_form_what_it_needs(client):
+    body = client.get("/options").json()
+    assert body["localities"] == list(LOCALITY_RATES)
+    assert body["typical_error_percent"] == round(load_metadata()["test_metrics"]["mape"] * 100)
+
+
+@pytest.mark.parametrize("path", ["/model.js", "/config.js"])
+def test_old_browser_only_files_are_gone(client, path):
+    assert client.get(path).status_code == 404
+
+
+def test_page_scripts_are_served(client):
+    assert client.get("/app.js").status_code == 200
+    assert client.get("/style.css").status_code == 200
 
 
 def test_api_reference_is_available(client):

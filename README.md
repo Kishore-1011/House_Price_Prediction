@@ -98,15 +98,14 @@ House_Price_Prediction/
 │   ├── model.py               # Candidate models and scoring
 │   ├── train.py               # Compares models and saves the best
 │   ├── predict.py             # Checks a client's file and predicts prices
-│   ├── api.py                 # FastAPI service and web page
+│   ├── api.py                 # FastAPI service
+│   ├── static/                # The web page served by the API
 │   ├── storage.py             # Saves and safely loads the model
-│   ├── export_web.py          # Exports model details used by the web page
 │   └── reports.py             # Charts
 ├── notebooks/                 # Exploration and a walkthrough of predicting
 ├── data/                      # Training data, client file and predictions
 ├── models/                    # Saved model and its checksum
 ├── reports/                   # Metrics and charts
-├── docs/                      # The web page served by the API
 └── tests/                     # Automated tests
 ```
 

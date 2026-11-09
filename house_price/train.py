@@ -24,9 +24,8 @@ from house_price.config import (
     TARGET,
     TEST_SIZE,
 )
-from house_price.export_web import export_web_model
 from house_price.generate_data import generate_housing_data, noise_free_prices
-from house_price.model import LOG_RIDGE, build_candidates, score_predictions
+from house_price.model import build_candidates, score_predictions
 from house_price.reports import plot_model_comparison, plot_predicted_vs_actual, plot_price_by_area
 from house_price.storage import save_model
 
@@ -39,7 +38,7 @@ class TrainingResult:
     models: dict
     cv_mae: dict
     test_scores: dict
-    price_ranges: dict
+    price_range: dict
     X_test: pd.DataFrame
     y_test: pd.Series
 
@@ -73,12 +72,9 @@ def train_models(data, include_forest=True):
         test_scores[name] = score_predictions(y_test, model.predict(X_test))
 
     best_name = min(cv_mae, key=cv_mae.get)
-    fresh = build_candidates(include_forest)
-    price_ranges = {
-        name: measure_price_range(fresh[name], models[name], X_train, y_train, X_test, y_test, folds)
-        for name in {best_name, LOG_RIDGE}
-    }
-    return TrainingResult(best_name, models, cv_mae, test_scores, price_ranges, X_test, y_test)
+    unfitted = build_candidates(include_forest)[best_name]
+    price_range = measure_price_range(unfitted, models[best_name], X_train, y_train, X_test, y_test, folds)
+    return TrainingResult(best_name, models, cv_mae, test_scores, price_range, X_test, y_test)
 
 
 def input_ranges(data):
@@ -100,9 +96,8 @@ def save_outputs(result, data):
         best,
         result.best_name,
         result.test_scores[result.best_name],
-        extras={"price_range": result.price_ranges[result.best_name], "input_ranges": input_ranges(data)},
+        extras={"price_range": result.price_range, "input_ranges": input_ranges(data)},
     )
-    export_web_model(result.models[LOG_RIDGE], result.test_scores[LOG_RIDGE], data, result.price_ranges[LOG_RIDGE])
 
     METRICS_PATH.parent.mkdir(parents=True, exist_ok=True)
     report = {
@@ -113,7 +108,7 @@ def save_outputs(result, data):
         "cross_validation_mae": result.cv_mae,
         "test": result.test_scores,
         "best_possible_on_test": best_possible_score(data, result),
-        "price_range": result.price_ranges[result.best_name],
+        "price_range": result.price_range,
     }
     METRICS_PATH.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
 
