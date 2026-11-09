@@ -7,8 +7,9 @@
     "baseline_median": 4121369.38,
     "linear_regression": 1038368.11,
     "ridge": 1036796.35,
-    "ridge_log_price": 719958.47,
-    "random_forest": 917173.04
+    "ridge_log_price": 719351.44,
+    "random_forest": 917173.04,
+    "gradient_boosting": 893425.39
   },
   "test": {
     "baseline_median": {
@@ -30,16 +31,33 @@
       "mape": 0.116925
     },
     "ridge_log_price": {
-      "mae": 712715.57,
-      "rmse": 1036724.56,
-      "r2": 0.966864,
-      "mape": 0.064255
+      "mae": 713005.15,
+      "rmse": 1036803.63,
+      "r2": 0.966859,
+      "mape": 0.0643
     },
     "random_forest": {
       "mae": 801283.73,
       "rmse": 1194677.06,
       "r2": 0.955998,
       "mape": 0.074155
+    },
+    "gradient_boosting": {
+      "mae": 775919.01,
+      "rmse": 1173928.05,
+      "r2": 0.957513,
+      "mape": 0.071503
     }
+  },
+  "best_possible_on_test": {
+    "mae": 706942.78,
+    "rmse": 1010647.12,
+    "r2": 0.96851,
+    "mape": 0.064432
+  },
+  "price_range": {
+    "low": 0.9,
+    "high": 1.1109,
+    "coverage_on_test": 0.8
   }
 }

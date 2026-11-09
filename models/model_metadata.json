@@ -7,16 +7,39 @@
     "age",
     "locality"
   ],
-  "sha256": "02d6d0051557d5054df19b56ed1ce267d999de8dd9faa505a1d8364b7c0bb38b",
+  "sha256": "96410983157b3452df9aa7f61808ce722c142562f51035d37bfbe24420ddb54d",
   "versions": {
     "python": "3.15.2",
     "scikit_learn": "1.9.1",
     "numpy": "2.5.4"
   },
   "test_metrics": {
-    "mae": 712715.57,
-    "rmse": 1036724.56,
-    "r2": 0.966864,
-    "mape": 0.064255
+    "mae": 713005.15,
+    "rmse": 1036803.63,
+    "r2": 0.966859,
+    "mape": 0.0643
+  },
+  "price_range": {
+    "low": 0.9,
+    "high": 1.1109,
+    "coverage_on_test": 0.8
+  },
+  "input_ranges": {
+    "area": {
+      "min": 600,
+      "max": 6000
+    },
+    "bedroom": {
+      "min": 1,
+      "max": 6
+    },
+    "bathroom": {
+      "min": 1,
+      "max": 5
+    },
+    "age": {
+      "min": 0,
+      "max": 40
+    }
   }
 }
