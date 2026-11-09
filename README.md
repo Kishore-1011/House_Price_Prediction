@@ -5,9 +5,7 @@
 ![scikit-learn](https://img.shields.io/badge/scikit--learn-1.9-F7931E?logo=scikitlearn&logoColor=white)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
-**Live demo: https://kishore-1011.github.io/House_Price_Prediction/**
-
-A complete machine learning workflow that estimates house prices: generate data, compare models, evaluate them on unseen houses, predict for a client's file, and serve the result on a web page.
+A complete machine learning workflow that estimates house prices: generate data, compare models, evaluate them on unseen houses, predict for a client's file, and serve predictions through a FastAPI service with a web page.
 
 > **The data is made up.** All 2,000 houses come from a formula in [`generate_data.py`](house_price/generate_data.py), and the neighbourhoods are invented. The prices and accuracy here show that the workflow functions. They say nothing about real property values.
 
@@ -88,7 +86,7 @@ The file needs these columns: `area`, `bedroom`, `bathroom`, `age` and `locality
 - **Missing values** are filled with the median inside the pipeline, so test houses can't influence training.
 - **Evaluation** compares every model against a baseline that always guesses the median price.
 - **Model safety:** a saved model file can run code when loaded, so its SHA-256 checksum is verified first, and a warning appears if the scikit-learn version differs from the one used for training.
-- **Two ways to serve predictions:** the FastAPI service loads the saved model and answers `POST /predict`, with validation and a health check. GitHub Pages can't run Python, so there the same page calculates prices in the browser from numbers exported to [`docs/model.js`](docs/model.js), and a test confirms that arithmetic matches the trained model.
+- **Serving predictions:** the FastAPI service loads the saved model and answers `POST /predict`, with validation and a health check. It also serves the web page, which sends each house to the API.
 
 ## Project structure
 
@@ -102,13 +100,13 @@ House_Price_Prediction/
 │   ├── predict.py             # Checks a client's file and predicts prices
 │   ├── api.py                 # FastAPI service and web page
 │   ├── storage.py             # Saves and safely loads the model
-│   ├── export_web.py          # Exports the model for the web demo
+│   ├── export_web.py          # Exports model details used by the web page
 │   └── reports.py             # Charts
 ├── notebooks/                 # Exploration and a walkthrough of predicting
 ├── data/                      # Training data, client file and predictions
 ├── models/                    # Saved model and its checksum
 ├── reports/                   # Metrics and charts
-├── docs/                      # The web demo
+├── docs/                      # The web page served by the API
 └── tests/                     # Automated tests
 ```
 
