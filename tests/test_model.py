@@ -42,6 +42,15 @@ def test_bigger_houses_cost_more(result):
     assert predictions[0] < predictions[1] < predictions[2]
 
 
+def test_price_range_brackets_the_prediction(result):
+    price_range = result.price_ranges[result.best_name]
+    assert price_range["low"] < 1 < price_range["high"]
+
+
+def test_price_range_holds_up_on_unseen_houses(result):
+    assert 0.7 <= result.price_ranges[result.best_name]["coverage_on_test"] <= 0.92
+
+
 def _web_formula(model, row):
     """The same arithmetic docs/app.js performs."""
     value = model["intercept"]
@@ -57,7 +66,7 @@ def _web_formula(model, row):
 
 def test_exported_numbers_reproduce_the_model(data, result):
     fitted = result.models[LOG_RIDGE]
-    exported = model_to_dict(fitted, result.test_scores[LOG_RIDGE], data)
+    exported = model_to_dict(fitted, result.test_scores[LOG_RIDGE], data, result.price_ranges[LOG_RIDGE])
     rows = result.X_test.head(50)
     expected = fitted.predict(rows)
     for (_, row), target in zip(rows.iterrows(), expected):

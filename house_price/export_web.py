@@ -5,7 +5,7 @@ import json
 from house_price.config import AREA, CATEGORICAL, OTHER_NUMERIC, WEB_MODEL_PATH
 
 
-def model_to_dict(model, metrics, data):
+def model_to_dict(model, metrics, data, price_range):
     """Describe a fitted log-price Ridge model as plain numbers."""
     pipeline = model.regressor_
     prep = pipeline.named_steps["prep"].named_transformers_
@@ -42,11 +42,12 @@ def model_to_dict(model, metrics, data):
             for index, name in enumerate(encoder.categories_[0])
         },
         "metrics": {"mae": metrics["mae"], "mape": metrics["mape"], "r2": metrics["r2"]},
+        "priceRange": {"low": price_range["low"], "high": price_range["high"]},
     }
 
 
-def export_web_model(model, metrics, data, path=WEB_MODEL_PATH):
+def export_web_model(model, metrics, data, price_range, path=WEB_MODEL_PATH):
     assert CATEGORICAL == ["locality"]
     path.parent.mkdir(parents=True, exist_ok=True)
-    payload = json.dumps(model_to_dict(model, metrics, data), indent=2)
+    payload = json.dumps(model_to_dict(model, metrics, data, price_range), indent=2)
     path.write_text(f"window.HOUSE_MODEL = {payload};\n", encoding="utf-8")

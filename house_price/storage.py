@@ -24,7 +24,11 @@ def _sha256(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def save_model(model, name, metrics, model_path=MODEL_PATH, metadata_path=METADATA_PATH):
+def load_metadata(metadata_path=METADATA_PATH):
+    return json.loads(metadata_path.read_text(encoding="utf-8"))
+
+
+def save_model(model, name, metrics, model_path=MODEL_PATH, metadata_path=METADATA_PATH, extras=None):
     model_path.parent.mkdir(parents=True, exist_ok=True)
     joblib.dump(model, model_path, compress=3)
     metadata = {
@@ -37,6 +41,7 @@ def save_model(model, name, metrics, model_path=MODEL_PATH, metadata_path=METADA
             "numpy": numpy.__version__,
         },
         "test_metrics": metrics,
+        **(extras or {}),
     }
     metadata_path.write_text(json.dumps(metadata, indent=2) + "\n", encoding="utf-8")
 

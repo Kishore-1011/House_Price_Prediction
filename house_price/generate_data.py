@@ -18,6 +18,15 @@ MISSING_AGE_SHARE = 0.02
 
 def generate_housing_data(rows=DEFAULT_ROWS, seed=SEED):
     """Return a DataFrame of invented houses. The same seed always gives the same data."""
+    return _simulate(rows, seed)[0]
+
+
+def noise_free_prices(rows=DEFAULT_ROWS, seed=SEED):
+    """Each house's price before the random noise, the best any model could ever predict."""
+    return _simulate(rows, seed)[1]
+
+
+def _simulate(rows, seed):
     rng = np.random.default_rng(seed)
 
     area = np.clip(rng.lognormal(mean=7.6, sigma=0.4, size=rows), 600, 6000)
@@ -33,7 +42,8 @@ def generate_housing_data(rows=DEFAULT_ROWS, seed=SEED):
     wear = np.exp(-0.009 * age)
     extras = 1 + 0.015 * bedroom + 0.02 * bathroom
     noise = rng.lognormal(mean=0, sigma=0.08, size=rows)
-    price = np.round(area * rate * wear * extras * noise, -3).astype(int)
+    noise_free = area * rate * wear * extras
+    price = np.round(noise_free * noise, -3).astype(int)
 
     data = pd.DataFrame(
         {
@@ -47,7 +57,7 @@ def generate_housing_data(rows=DEFAULT_ROWS, seed=SEED):
     )
     data.loc[rng.random(rows) < MISSING_BEDROOM_SHARE, "bedroom"] = np.nan
     data.loc[rng.random(rows) < MISSING_AGE_SHARE, "age"] = np.nan
-    return data
+    return data, noise_free
 
 
 def main():
